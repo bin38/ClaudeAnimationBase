@@ -182,7 +182,15 @@ function centred(pts, draw) {
   const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
   push(); translate(cx, cy); draw(pts.map(([x, y]) => [x - cx, y - cy])); pop();
 }
-function paint(pts, o = {}) { centred(pts, (P) => paintAt(P, o)); }
+function paint(pts, o = {}) { centred(pts, (P) => paintAt(P, PROJECT.lite ? liteOf(o) : o)); }
+// PROJECT.lite: no GPU (software WebGL), where each watercolour fill costs up to a second a frame. Fills become flat,
+// translucent washes: a shape with a wash keeps just its wash, and a fill-only shape (shading, shadows, skies) becomes a
+// thin wash in the fill's colour.
+function liteOf(o) {
+  if (!o.fill) return o;
+  const { fill, fillOp, bleed, tex, border, ...rest } = o;
+  return rest.wash ? rest : { ...rest, wash: fill, washOp: Math.round((fillOp ?? 170) * .6) };
+}
 function paintAt(pts, o) {
   if (o.wash || o.fill || o.hatch) {
     if (o.wash) brush.wash(o.wash, o.washOp ?? 255); else brush.noWash();
