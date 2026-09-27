@@ -13,8 +13,11 @@
   #scrub { flex: 1; }
   #tt { font-variant-numeric: tabular-nums; min-width: 190px; }
 </style>
-<script src="node_modules/p5/lib/p5.min.js"></script>
-<script src="node_modules/p5.brush/dist/p5.brush.js"></script>
+<script>
+  // studio.html?lite runs the kit on lite/p5lite.js (Canvas2D: no WebGL, no GPU, no npm install) instead of p5 + p5.brush.
+  document.write(/[?&]lite\b/.test(location.search) ? '<script src="lite/p5lite.js"><\/script>'
+    : '<script src="node_modules/p5/lib/p5.min.js"><\/script><script src="node_modules/p5.brush/dist/p5.brush.js"><\/script>');
+</script>
 </head>
 <body>
 <main>

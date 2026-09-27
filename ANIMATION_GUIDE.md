@@ -182,6 +182,8 @@ node render.mjs --sheet=2.3,2.4 --crop=760,420,500,400 --w=500 --out=out/check/f
 node render.mjs --strip=2.1:2.6 --crop-at=960,700,500,400 --out=out/check/feet.jpg
 ```
 
+No GPU, or no Chrome? `node lite/render.mjs` takes the same flags and renders on the CPU in about 0.1 s per frame. Its watercolours are an approximation of p5.brush's, but everything else (shapes, faces, motion, boil, camera, transitions) matches, so the review loop works the same.
+
 Open each image and actually look at it. Check:
 
 - **Read:** is the event of each shot clear from its sheet alone? Is Clawd big enough, and does Clawd separate from the background?

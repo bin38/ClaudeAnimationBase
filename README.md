@@ -27,6 +27,17 @@ That renders the 11-second demo in [src/scenes/demo.js](src/scenes/demo.js). Ope
 
 On Linux, `render.mjs` starts Chrome with `--no-sandbox` (Ubuntu 23.10+ blocks Chrome's sandbox in headless use) and also finds a Chromium installed by Playwright. With no GPU at all, add `--soft-gl` to render WebGL in software: slow on watercolour fills, but it works. On a headless Linux machine with an NVIDIA GPU (a cloud or cluster node), add `--gpu-angle=gl-egl` (or `vulkan`); `node gpu_probe.mjs <chrome path>` shows which renderer each set of flags gets.
 
+## Lite: no Chrome, no GPU
+
+[lite/](lite/) runs the same code on plain Canvas2D. [lite/p5lite.js](lite/p5lite.js) stands in for p5 and p5.brush, and [lite/render.mjs](lite/render.mjs) renders in Node on all cores. It takes the same flags as `render.mjs`, at about 0.1 s per 1080p frame on a CPU. The demo renders in 30 s on 4 cores, against roughly 44 s *per frame* for `--soft-gl`. The watercolours are an approximation (see [docs/lite_compare.jpg](docs/lite_compare.jpg)), so use it to iterate and check your work, and render the final cut with `render.mjs` on a GPU if you want p5.brush's real watercolours.
+
+```bash
+npm install --prefix lite
+node lite/render.mjs --clip --out=out/video.mp4
+```
+
+Open `studio.html?lite` to scrub without installing anything. `node lite/new.mjs ../my-video` starts a new video project from the kit, and [.claude/skills/clawd-animate](.claude/skills/clawd-animate/SKILL.md) packages the workflow as a Claude Code skill. [lite/README.md](lite/README.md) has the details (in Chinese).
+
 ## What's here
 
 | path | what it is |

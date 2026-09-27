@@ -1,0 +1,14 @@
+{
+  "name": "clawd-lite",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "A light runtime for Claude Animation Base: the same scene code on Canvas2D, rendered in Node without Chrome, WebGL or a GPU",
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.9"
+  },
+  "optionalDependencies": {
+    "ffmpeg-static": "^5.2.0"
+  }
+}
