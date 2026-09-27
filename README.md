@@ -23,7 +23,7 @@ npm install
 node render.mjs --clip --out=out/video.mp4
 ```
 
-That renders the 11-second demo in [src/scenes/demo.js](src/scenes/demo.js). Open [studio.html](studio.html) in Chrome to scrub through it. Add `?loop=emotions` or `?loop=views` to see the model sheets. If Chrome isn't in a standard location, pass `--chrome=<path>` or set `CHROME_PATH`.
+That renders the scene that [studio.html](studio.html) loads, which is now the 3-minute 顺纺集团 film (see below; a full render takes hours without a GPU). To render the 11-second demo in [src/scenes/demo.js](src/scenes/demo.js) instead, swap `shunfang.js` for `demo.js` in studio.html and set `duration: 11, bpm: 120` (and drop `audio`) in [src/config.js](src/config.js). Open studio.html in Chrome to scrub through it. Add `?loop=emotions` or `?loop=views` to see the model sheets. If Chrome isn't in a standard location, pass `--chrome=<path>` or set `CHROME_PATH`.
 
 On Linux, `render.mjs` starts Chrome with `--no-sandbox` (Ubuntu 23.10+ blocks Chrome's sandbox in headless use) and also finds a Chromium installed by Playwright. With no GPU at all, add `--soft-gl` to render WebGL in software: slow on watercolour fills, but it works. On a headless Linux machine with an NVIDIA GPU (a cloud or cluster node), add `--gpu-angle=gl-egl` (or `vulkan`); `node gpu_probe.mjs <chrome path>` shows which renderer each set of flags gets.
 
@@ -49,7 +49,7 @@ On Linux, `render.mjs` starts Chrome with `--no-sandbox` (Ubuntu 23.10+ blocks C
 ```bash
 python3 scripts/make_score.py assets/shunfang_score.wav                     # score + SFX (then encode to .m4a with ffmpeg)
 node render.mjs --soft-gl --frames --fps=12 --workers=3                     # 12 drawings a second ("on twos")
-node render.mjs --encode --fps=12 --audio=assets/shunfang_score.m4a --out=out/shunfang.mp4   # 24 fps MP4 with the score
+node render.mjs --encode --fps=12 --out=out/shunfang.mp4                    # 24 fps MP4 with the score (PROJECT.audio)
 ```
 
 `--soft-gl` now also disables Chrome's accelerated 2D canvas: with SwiftShader, reading the frame back from an

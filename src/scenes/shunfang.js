@@ -214,14 +214,11 @@
 
     titleBlock(lt, 3.4, lt > tTug ? Math.exp(-(lt - tTug) * 4) * .3 : 0);
     // (the seal and subtitle live in world space too, so the pan carries them away)
-    const sealK = seg(lt, 4.55, 4.8);
-    if (sealK > 0) {
-      const [sx, sy] = toScreen(1455, 330);
-      seal(sx, sy, 120 * CAM.zoom, ['顺', '纺'], sealK);
-    }
+    const sealK = seg(lt, 4.55, 4.8), [sx, sy] = toScreen(1455, 330), sealS = 120 * CAM.zoom;
     const [bx, by] = toScreen(960, 480);
     cap(lt, 5.3, 99, '始于一九八四 · 中国顺德', bx, by, Math.round(54 * CAM.zoom), C.redDk);
     camEnd();
+    seal(sx, sy, sealS, ['顺', '纺'], sealK);   // screen space: the box and its glyphs share one transform
     // open: the paper fades up from ink
     boilSeed('fadein');
     if (lt < .6) paint(rectPts(-60, -60, W + 120, H + 120), { wash: C.ink, washOp: 255 * (1 - ease(lt / .6)), ink: null });
@@ -667,6 +664,10 @@
       boilSeed('item' + i);
       push(); translate(x, 728); scale(1, .55); garment(0, 0, 30, ['jacket', 'hoodie', 'sport', 'wind', 'shirt'][(i + 2) % 5], { sw: .5 }); pop();
     }
+    // the floor, under the packing station, the stack and 小纺
+    boilSeed('floor');
+    paint(rectPts(cx - 1100, 860, 2200, 400), { wash: '#D8C7A8', ink: null });
+    inkLine([[cx - 1100, 860], [cx + 1100, 860]], 1, C.ink, 'ink', 0);
     // packing: a garment drops into the open carton on each bar, the flaps fold, the carton joins the stack
     const packT = [13.2, 15.7, 18.2];
     boilSeed('pack');
@@ -692,9 +693,6 @@
       push(); translate(bx, by); scale(1 + sq, 1 - sq); box(0, 0, 150, 110); pop();
     }
     // 小纺 on the floor in front
-    boilSeed('floor');
-    paint(rectPts(cx - 1100, 860, 2200, 400), { wash: '#D8C7A8', ink: null });
-    inkLine([[cx - 1100, 860], [cx + 1100, 860]], 1, C.ink, 'ink', 0);
     const mood = emotions(lt, [[0, 'determined'], [5.2, 'thinking', { lookX: -.2, lookY: -.6 }], [6.8, 'proud'], [8.4, 'happy'], [13.4, 'excited', { lookX: .7 }], [20.8, 'love']]);
     const walking = (lt > .4 && lt < 5.2) || (lt > 8.6 && lt < 12.6) || (lt > 19 && lt < 20.6), wk = lt < 8.6 ? w1 : lt < 19 ? w2 : w3;
     const cl = { ...mood };
@@ -1061,7 +1059,7 @@
     const P = []; for (let x = -200; x <= 2200; x += 8) P.push([x, threadY(x)]);
     boilSeed('stitch'); stitch(P);
     titleBlock(lt, .9);
-    seal(1455, 330, 120, ['顺', '纺'], seg(lt, 1.95, 2.2));
+    const [sx, sy] = toScreen(1455, 330), sealS = 120 * CAM.zoom;
     cap(lt, 2.9, 99, '一线相牵 · 织就未来', 960, 480, 66, C.red);
     cap(lt, 3.9, 99, '佛山市顺德区顺纺（集团）有限公司', 960, 560, 38, C.ink);
     // the thread from 小纺's spool to the bow
@@ -1079,6 +1077,7 @@
     hero(hx, threadY(hx) + 2, u, { ...cl, noShadow: true });
     const at = toScreen(KX, KY);
     camEnd();
+    seal(sx, sy, sealS, ['顺', '纺'], seg(lt, 1.95, 2.2));
     flushLetters();
     boilSeed('iris');
     if (lt < .3) clothWipe(.5 + lt / .8, C.red, C.redDk, C.cream);
