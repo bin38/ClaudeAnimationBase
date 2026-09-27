@@ -44,9 +44,11 @@ function turn(t, t0, t1, a0, a1) {
 
 // ---------- colour ----------
 // Tints shift the body colour with the mood. tint: a name here or any hex colour; tintK: 0..1 strength.
+// BODY: the default body colours (set it once to recolour every character in a video, emotion cross-fades included).
+let BODY = { col: PAL.clay, dk: PAL.clayDk, lt: '#F5B394' };
 const TINT = { pale: '#F6E6D2', flush: '#E23E36', blue: '#6D86BE', rosy: '#EF8EA8', green: '#98B25E', gold: '#F0BE46' };
 function tintCols(o) {
-  const c = { col: o.col || PAL.clay, dk: o.dk || PAL.clayDk, lt: o.lt || '#F5B394' };
+  const c = { col: o.col || BODY.col, dk: o.dk || BODY.dk, lt: o.lt || BODY.lt };
   const tc = o.tint && (TINT[o.tint] || o.tint), k = clamp(o.tintK ?? 1);
   if (!tc || k <= 0) return c;
   return { col: mixCol(c.col, tc, .55 * k), dk: mixCol(c.dk, mixCol(tc, PAL.ink, .35), .5 * k), lt: mixCol(c.lt, mixCol(tc, '#FFFFFF', .4), .45 * k) };
@@ -363,7 +365,14 @@ function mouth(u, m, sw) {
 function hat(u, h, sw) {
   if (!h || h === 'mask' || h === 'masq' || h === 'bowtie') return;
   const P = pts => pts.map(([a, b]) => [a * u, b * u]);
-  if (h === 'party') {
+  if (h === 'spool') {   // a wooden thread spool wound with red thread, a loose end curling off it
+    const wood = '#B07A4C', thr = '#C23A3A';
+    paint(rectPts(-1.7 * u, -8.9 * u, 3.4 * u, 1 * u, u * .04), { wash: wood, ink: PAL.ink, sw: sw * .7 });
+    paint(rectPts(-1.3 * u, -11.2 * u, 2.6 * u, 2.4 * u, u * .04), { wash: thr, ink: PAL.ink, sw: sw * .7 });
+    for (let i = 0; i < 3; i++) inkLine([[-1.2 * u, (-10.6 + i * .7) * u], [1.2 * u, (-10.3 + i * .7) * u]], sw * .35, '#8A2430', 'inkfine', 0);
+    paint(rectPts(-1.7 * u, -12 * u, 3.4 * u, 1 * u, u * .04), { wash: wood, ink: PAL.ink, sw: sw * .7 });
+    inkLine([[1.2 * u, -10.2 * u], [2.2 * u, -10.6 * u], [2.7 * u, -11.6 * u + Math.sin(T * 5) * .3 * u], [3.4 * u, -11.9 * u]], sw * .5, thr, 'ink', .6);
+  } else if (h === 'party') {
     paint(P([[-1.8, -7.9], [0, -12.8], [1.8, -7.9]]), { wash: PAL.rose, fill: PAL.violet, fillOp: 50, ink: PAL.ink, sw: sw * .8 });
     paint(ellPts(0, -12.8 * u, u * .75, u * .75, 12), { wash: PAL.ochre, ink: PAL.ink, sw: sw * .6 });
   } else if (h === 'hard') {

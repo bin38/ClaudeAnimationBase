@@ -23,7 +23,7 @@ npm install
 node render.mjs --clip --out=out/video.mp4
 ```
 
-That renders the 11-second demo in [src/scenes/demo.js](src/scenes/demo.js). Open [studio.html](studio.html) in Chrome to scrub through it. Add `?loop=emotions` or `?loop=views` to see the model sheets. If Chrome isn't in a standard location, pass `--chrome=<path>` or set `CHROME_PATH`.
+That renders the scene that [studio.html](studio.html) loads, which is now the 3-minute 顺纺集团 film (see below; a full render takes hours without a GPU). To render the 11-second demo in [src/scenes/demo.js](src/scenes/demo.js) instead, swap `shunfang.js` for `demo.js` in studio.html and set `duration: 11, bpm: 120` (and drop `audio`) in [src/config.js](src/config.js). Open studio.html in Chrome to scrub through it. Add `?loop=emotions` or `?loop=views` to see the model sheets. If Chrome isn't in a standard location, pass `--chrome=<path>` or set `CHROME_PATH`.
 
 On Linux, `render.mjs` starts Chrome with `--no-sandbox` (Ubuntu 23.10+ blocks Chrome's sandbox in headless use) and also finds a Chromium installed by Playwright. With no GPU at all, add `--soft-gl` to render WebGL in software: slow on watercolour fills, but it works. On a headless Linux machine with an NVIDIA GPU (a cloud or cluster node), add `--gpu-angle=gl-egl` (or `vulkan`); `node gpu_probe.mjs <chrome path>` shows which renderer each set of flags gets.
 
@@ -39,3 +39,18 @@ On Linux, `render.mjs` starts Chrome with `--no-sandbox` (Ubuntu 23.10+ blocks C
 | [src/scenes/](src/scenes/) | Your video goes here (the demo is an example) |
 | [render.mjs](render.mjs) | Headless renderer: contact sheets, frame strips, crops, stills, MP4 |
 | [docs/](docs/) | Model sheets: [emotions](docs/emotions.jpg) (also [animated](docs/emotions.webp)) and [views, motion and hats](docs/views.jpg) |
+
+## 顺纺集团 · 企业宣传片 (3:00)
+
+[src/scenes/shunfang.js](src/scenes/shunfang.js) is a 3-minute corporate film for 顺纺集团 (Shunde, Foshan), storyboarded in
+[STORYBOARD.md](STORYBOARD.md). The score and sound effects are synthesized from scratch by
+[scripts/make_score.py](scripts/make_score.py) (numpy + scipy), timed to the film's 96 BPM bar grid and event times.
+
+```bash
+python3 scripts/make_score.py assets/shunfang_score.wav                     # score + SFX (then encode to .m4a with ffmpeg)
+node render.mjs --soft-gl --frames --fps=12 --workers=3                     # 12 drawings a second ("on twos")
+node render.mjs --encode --fps=12 --out=out/shunfang.mp4                    # 24 fps MP4 with the score (PROJECT.audio)
+```
+
+`--soft-gl` now also disables Chrome's accelerated 2D canvas: with SwiftShader, reading the frame back from an
+accelerated canvas cost ~10 s per frame; without it a frame takes well under a second.
