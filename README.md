@@ -39,3 +39,18 @@ On Linux, `render.mjs` starts Chrome with `--no-sandbox` (Ubuntu 23.10+ blocks C
 | [src/scenes/](src/scenes/) | Your video goes here (the demo is an example) |
 | [render.mjs](render.mjs) | Headless renderer: contact sheets, frame strips, crops, stills, MP4 |
 | [docs/](docs/) | Model sheets: [emotions](docs/emotions.jpg) (also [animated](docs/emotions.webp)) and [views, motion and hats](docs/views.jpg) |
+
+## 顺纺集团 · 企业宣传片 (3:00)
+
+[src/scenes/shunfang.js](src/scenes/shunfang.js) is a 3-minute corporate film for 顺纺集团 (Shunde, Foshan), storyboarded in
+[STORYBOARD.md](STORYBOARD.md). The score and sound effects are synthesized from scratch by
+[scripts/make_score.py](scripts/make_score.py) (numpy + scipy), timed to the film's 96 BPM bar grid and event times.
+
+```bash
+python3 scripts/make_score.py assets/shunfang_score.wav                     # score + SFX (then encode to .m4a with ffmpeg)
+node render.mjs --soft-gl --frames --fps=12 --workers=3                     # 12 drawings a second ("on twos")
+node render.mjs --encode --fps=12 --audio=assets/shunfang_score.m4a --out=out/shunfang.mp4   # 24 fps MP4 with the score
+```
+
+`--soft-gl` now also disables Chrome's accelerated 2D canvas: with SwiftShader, reading the frame back from an
+accelerated canvas cost ~10 s per frame; without it a frame takes well under a second.
